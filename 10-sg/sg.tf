@@ -75,7 +75,7 @@ resource "aws_security_group_rule" "bastion_public" {
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks = ["141.35.40.76/76"]
+  cidr_blocks = ["0.0.0.0/0"]
   security_group_id       = module.bastion_sg.sg_id
 }
 
@@ -113,4 +113,13 @@ resource "aws_security_group_rule" "vpn_1194" {
   protocol          = "tcp" 
   cidr_blocks = ["0.0.0.0/0"]
   security_group_id       = module.vpn_sg.sg_id
+}
+
+resource "aws_security_group_rule" "app_alb_vpn" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp" 
+  source_security_group_id = module.vpn_sg.sg_id
+  security_group_id       = module.app_alb_sg.sg_id
 }

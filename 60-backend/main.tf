@@ -1,6 +1,6 @@
 resource "aws_instance" "backend" {
   ami                    = "ami-09c813fb71547fc4f" # This is our devops-practice AMI ID
-  vpc_security_group_ids = local.backend_sg_id
+  vpc_security_group_ids = [data.aws_ssm_parameter.backend_sg_id.value]
   instance_type          = "t3.micro"
   subnet_id =  local.private_subnet_id
   tags = merge(
@@ -58,7 +58,7 @@ resource "null_resource" "backend_delete" {
     instance_id = aws_instance.backend.id
   }
 
-provisioner "local-exec" {
+  provisioner "local-exec" {
     command = "aws ec2 terminate-instances --instance-ids ${aws_instance.backend.id}"
   }
 
@@ -67,9 +67,10 @@ provisioner "local-exec" {
 
 resource "aws_lb_target_group" "backend" {
   name     = local.resource_name
-  port     = 80
+  port     = 8080
   protocol = "HTTP"
   vpc_id   = local.vpc_id
+  deregistration_delay = 60
 
   health_check {
     healthy_threshold = 2

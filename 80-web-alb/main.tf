@@ -24,10 +24,28 @@ resource "aws_lb_listener" "https" {
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = "arn:aws:iam::187416307283:server-certificate/test_cert_rab3wuqwgja25ct3n4jdj2tzu4"
+  certificate_arn   = local.web_alb_certificate_arn
 
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.front_end.arn
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/html"
+      message_body = "<h1>Hello, I am from frontend web ALB with HTTPS</h1>"
+      status_code  = "200"
+    }
+  }
+}
+
+resource "aws_route53_record" "web_alb" {
+  zone_id = var.zone_id
+  name    = "expense-${var.environment}.${var.domain_name}"
+  type    = "A"
+
+  # these are ALB DNS name and zone information
+  alias {
+    name                   = module.alb.dns_name
+    zone_id                = module.alb.zone_id
+    evaluate_target_health = false
   }
 }

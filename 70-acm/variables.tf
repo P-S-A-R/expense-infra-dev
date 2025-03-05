@@ -18,3 +18,7 @@ variable "common_tags" {
 variable "domain_name" {
     default = "daws82s.tech"
 }
+
+variable "zone_id" {
+  default = "Z06327003DEZYOOK6T7EB"
+}

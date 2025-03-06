@@ -78,7 +78,7 @@ resource "aws_lb_target_group" "frontend" {
     timeout = 5
     protocol = "HTTP"
     port = 80
-    path = "/health"
+    path = "/"
     matcher = "200-299"
     interval = 10
   }

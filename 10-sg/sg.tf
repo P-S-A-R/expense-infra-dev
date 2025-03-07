@@ -149,7 +149,7 @@ resource "aws_security_group_rule" "mysql_vpn" {
   to_port           = 3306
   protocol          = "tcp" 
   source_security_group_id = module.vpn_sg.sg_id
-  security_group_id       = module.vpn_sg.sg_id
+  security_group_id       = module.mysql_sg.sg_id
 }
 
 resource "aws_security_group_rule" "backend_vpn" {
@@ -216,8 +216,8 @@ resource "aws_security_group_rule" "frontend_web_alb" {
   from_port         = 80
   to_port           = 80
   protocol          = "tcp" 
-  source_security_group_id= module.frontend_sg.sg_id
-  security_group_id       = module.web_alb_sg.sg_id
+  source_security_group_id= module.web_alb_sg.sg_id
+  security_group_id       = module.frontend_sg.sg_id
 }
 
 resource "aws_security_group_rule" "frontend_public" {
